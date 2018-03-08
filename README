@@ -1,0 +1,10 @@
+## 初始施工中
+==============
+1. canal->flume
+  目前暂时ok
+2. flume->kafka
+  待施工
+3. kafka->consumer
+  施工中
+4. consumer->worker
+  待施工
