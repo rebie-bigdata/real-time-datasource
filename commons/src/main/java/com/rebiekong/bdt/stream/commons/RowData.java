@@ -2,24 +2,39 @@ package com.rebiekong.bdt.stream.commons;
 
 import com.alibaba.fastjson.JSON;
 
+import java.beans.Beans;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class RowData {
+public class RowData  extends Beans {
 
-    private List<ColumnData> data;
+    private Long kafkaOffset;
+    private List<ColumnData> data = new ArrayList<>();
+    private Map<String, ColumnData> header = new HashMap<>();
     private String type;
     private String batchUUID;
     private long createTime;
-    private long binlogOffset;
-    private String binlogFile;
     private String source;
 
-    public RowData(List<ColumnData> data) {
-        this.data = data;
+    public RowData() {
+    }
+
+    public Long getKafkaOffset() {
+        return kafkaOffset;
+    }
+
+    public void setKafkaOffset(Long kafkaOffset) {
+        this.kafkaOffset = kafkaOffset;
     }
 
     public List<ColumnData> getData() {
         return data;
+    }
+
+    public void setData(List<ColumnData> data) {
+        this.data = data;
     }
 
     public String getBatchUUID() {
@@ -36,22 +51,6 @@ public class RowData {
 
     public void setCreateTime(long createTime) {
         this.createTime = createTime;
-    }
-
-    public long getBinlogOffset() {
-        return binlogOffset;
-    }
-
-    public void setBinlogOffset(long binlogOffset) {
-        this.binlogOffset = binlogOffset;
-    }
-
-    public String getBinlogFile() {
-        return binlogFile;
-    }
-
-    public void setBinlogFile(String binlogFile) {
-        this.binlogFile = binlogFile;
     }
 
     public String getSource() {
@@ -72,5 +71,13 @@ public class RowData {
 
     public String toString() {
         return JSON.toJSONString(this);
+    }
+
+    public Map<String, ColumnData> getHeader() {
+        return header;
+    }
+
+    public void setHeader(Map<String, ColumnData> header) {
+        this.header = header;
     }
 }

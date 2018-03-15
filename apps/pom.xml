@@ -9,7 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>multi-kafka-sink</artifactId>
+    <artifactId>apps</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.rebiekong.bdt.stream</groupId>
+            <artifactId>kafka-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.rebiekong.bdt.stream</groupId>
+            <artifactId>data-worker</artifactId>
+        </dependency>
+    </dependencies>
 
 
 </project>

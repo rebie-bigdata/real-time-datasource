@@ -5,7 +5,7 @@ import com.alibaba.otter.canal.protocol.CanalEntry.Column;
 import com.alibaba.otter.canal.protocol.CanalEntry.Entry;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.rebiekong.bdt.stream.commons.ColumnData;
-import com.rebiekong.bdt.stream.commons.RowData;
+import com.rebiekong.bdt.stream.commons.MysqlRowData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class EntryTransformFunction implements Function<Entry, ArrayList<RowData>> {
+public class EntryTransformFunction implements Function<Entry, ArrayList<MysqlRowData>> {
 
     Logger logger = LoggerFactory.getLogger(EntryTransformFunction.class);
 
@@ -25,9 +25,9 @@ public class EntryTransformFunction implements Function<Entry, ArrayList<RowData
     }
 
     @Override
-    public ArrayList<RowData> apply(Entry entry) {
+    public ArrayList<MysqlRowData> apply(Entry entry) {
 
-        ArrayList<RowData> result = new ArrayList<>();
+        ArrayList<MysqlRowData> result = new ArrayList<>();
         try {
             result = realAction(entry);
         } catch (InvalidProtocolBufferException e) {
@@ -36,9 +36,9 @@ public class EntryTransformFunction implements Function<Entry, ArrayList<RowData
         return result;
     }
 
-    private ArrayList<RowData> realAction(Entry entry) throws InvalidProtocolBufferException {
+    private ArrayList<MysqlRowData> realAction(Entry entry) throws InvalidProtocolBufferException {
 
-        ArrayList<RowData> result = new ArrayList<>();
+        ArrayList<MysqlRowData> result = new ArrayList<>();
 
         CanalEntry.RowChange rowChange = CanalEntry.RowChange.parseFrom(entry.getStoreValue());
 
@@ -59,10 +59,11 @@ public class EntryTransformFunction implements Function<Entry, ArrayList<RowData
                 return columnData;
             }).collect(Collectors.toList());
 
-            RowData row = new RowData(tmpData);
+            MysqlRowData row = new MysqlRowData();
+            row.setData(tmpData);
             row.setType(eventType.toString());
             row.setBatchUUID(uuid);
-            row.setSource("mysql." + entry.getHeader().getSchemaName() + "." + entry.getHeader().getTableName());
+            row.setSource(entry.getHeader().getSchemaName() + "." + entry.getHeader().getTableName());
             row.setCreateTime(entry.getHeader().getExecuteTime());
             row.setBinlogOffset(entry.getHeader().getLogfileOffset());
             row.setBinlogFile(entry.getHeader().getLogfileName());

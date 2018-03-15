@@ -6,7 +6,16 @@ public class ColumnData {
     private String name;
     private String value;
     private int type;
-    private boolean isPrimaryKey;
+    private boolean isPrimaryKey = false;
+
+    public static ColumnData create(String name, Boolean isPrimaryKey, Integer sqlType, String value) {
+        ColumnData c = new ColumnData();
+        c.setName(name);
+        c.setPrimaryKey(isPrimaryKey);
+        c.setType(sqlType);
+        c.setValue(value);
+        return c;
+    }
 
     public String getName() {
         return name;
@@ -39,8 +48,9 @@ public class ColumnData {
     public void setPrimaryKey(boolean primaryKey) {
         isPrimaryKey = primaryKey;
     }
-    
+
     public String toString() {
         return JSON.toJSONString(this);
     }
+
 }

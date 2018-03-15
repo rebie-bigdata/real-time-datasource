@@ -9,11 +9,14 @@ import org.apache.flume.EventDeliveryException;
 import org.apache.flume.PollableSource;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.event.EventBuilder;
+import org.apache.flume.sink.kafka.KafkaSinkConstants;
 import org.apache.flume.source.AbstractSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,7 +43,11 @@ public class CanalSource extends AbstractSource implements Configurable, Pollabl
             this.getChannelProcessor().processEventBatch(
                     message.getEntries().stream()
                             .map(new EntryTransformFunction(UUID.randomUUID().toString()))
-                            .flatMap(rows -> rows.stream().map(row -> EventBuilder.withBody(row.toString().getBytes())))
+                            .flatMap(rows -> rows.stream().map(row -> {
+                                Map<String, String> header = new HashMap<>();
+                                header.put(KafkaSinkConstants.KEY_HEADER, row.getSource());
+                                return EventBuilder.withBody(row.toString().getBytes(), header);
+                            }))
                             .collect(Collectors.toList())
             );
             connector.ack(batchId);
